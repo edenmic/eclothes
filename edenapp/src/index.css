@@ -2,11 +2,9 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -24,8 +22,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -52,6 +48,77 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Import page styles */
+@import './styles/pages/home.css';
+@import './styles/pages/profile.css';
+@import './styles/pages/item-detail.css';
+@import './styles/pages/items.css';
+@import './styles/pages/create-listing.css';
+
+/* Common UI elements */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.page {
+  padding: 1rem 0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: #646cff;
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #535bf2;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid #646cff;
+  color: #646cff;
+}
+
+.btn-secondary:hover {
+  background-color: #f0f0ff;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error-message {
+  padding: 1rem;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 4px;
+  margin: 1rem 0;
+}
+
+.not-found {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
 }
 
 @media (prefers-color-scheme: light) {

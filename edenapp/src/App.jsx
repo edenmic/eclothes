@@ -3,7 +3,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Layout from './components/layout/Layout'
 import Home from './pages/Home'
 import Items from './pages/Items'
+import ItemDetail from './pages/ItemDetail'
 import CreateListing from './pages/CreateListing'
+import Profile from './pages/Profile'
 import SignIn from './components/auth/SignIn'
 import SignUp from './components/auth/SignUp'
 import { useAuth } from './hooks/useAuth'
@@ -37,11 +39,18 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="items" element={<Items />} />
+            <Route path="items/:id" element={<ItemDetail />} />
             <Route path="create-listing" element={
               <PrivateRoute>
                 <CreateListing />
               </PrivateRoute>
             } />
+            <Route path="profile" element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            } />
+            <Route path="profile/:id" element={<Profile />} />
             <Route path="auth" element={
               <AuthRoute>
                 <SignIn />

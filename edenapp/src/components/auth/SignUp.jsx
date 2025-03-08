@@ -4,22 +4,29 @@ import { useAuth } from '../../hooks/useAuth'
 
 export default function SignUp() {
   const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const { signUp } = useAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
+    setLoading(true)
 
     if (password !== confirmPassword) {
       setError("Passwords don't match")
+      setLoading(false)
       return
     }
     
-    const { error } = await signUp({ email, password })
+    // Pass name to signUp function, which will use it for profile creation
+    const { error } = await signUp({ email, password, name })
+    setLoading(false)
+    
     if (error) {
       setError(error.message)
     } else {
@@ -43,6 +50,16 @@ export default function SignUp() {
           />
         </div>
         <div className="form-group">
+          <label htmlFor="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
           <label htmlFor="password">Password</label>
           <input
             type="password"
@@ -62,7 +79,13 @@ export default function SignUp() {
             required
           />
         </div>
-        <button type="submit" className="btn btn-primary">Sign Up</button>
+        <button 
+          type="submit" 
+          className="btn btn-primary"
+          disabled={loading}
+        >
+          {loading ? 'Signing up...' : 'Sign Up'}
+        </button>
       </form>
     </div>
   )
