@@ -4,6 +4,7 @@ import { getProfileById } from '../../lib/profileApi';
 import { getUserItems } from '../../lib/itemApi';
 import { getReviewsForUser } from '../../lib/reviewApi';
 import ProfileEdit from './ProfileEdit';
+import ReviewForm from './ReviewForm';
 
 export default function ProfileView({ userId, isOwnProfile = false }) {
   const { user } = useAuth();
@@ -16,6 +17,18 @@ export default function ProfileView({ userId, isOwnProfile = false }) {
 
   // If no userId provided and it's the user's own profile, use the logged in user's ID
   const profileId = userId || (isOwnProfile ? user?.id : null);
+
+  const loadReviews = async () => {
+    try {
+      const reviewsResult = await getReviewsForUser(profileId);
+      if (!reviewsResult.success) {
+        throw new Error(reviewsResult.error?.message || 'Failed to load reviews');
+      }
+      setUserReviews(reviewsResult.data || []);
+    } catch (err) {
+      console.error('Error loading reviews:', err);
+    }
+  };
 
   useEffect(() => {
     if (!profileId) {
@@ -44,11 +57,7 @@ export default function ProfileView({ userId, isOwnProfile = false }) {
         setUserItems(itemsResult.data || []);
         
         // Fetch user's reviews
-        const reviewsResult = await getReviewsForUser(profileId);
-        if (!reviewsResult.success) {
-          throw new Error(reviewsResult.error?.message || 'Failed to load reviews');
-        }
-        setUserReviews(reviewsResult.data || []);
+        await loadReviews();
         
       } catch (err) {
         console.error('Error loading profile data:', err);
@@ -64,6 +73,11 @@ export default function ProfileView({ userId, isOwnProfile = false }) {
   const handleProfileUpdate = (updatedProfile) => {
     setProfile(updatedProfile);
     setIsEditing(false);
+  };
+
+  const handleReviewSubmitted = () => {
+    // Reload the reviews to show the new one
+    loadReviews();
   };
   
   if (loading) return <div className="loading">Loading profile data...</div>;
@@ -133,7 +147,7 @@ export default function ProfileView({ userId, isOwnProfile = false }) {
               </div>
             )}
             
-            {profile.contact_number && isOwnProfile && (
+            {profile.contact_number && (
               <div className="detail-item">
                 <span className="detail-label">Contact Number:</span>
                 <span className="detail-value">{profile.contact_number}</span>
@@ -195,6 +209,15 @@ export default function ProfileView({ userId, isOwnProfile = false }) {
                 ))}
               </div>
             </div>
+          )}
+          
+          {/* Show review form if user is logged in and viewing someone else's profile */}
+          {user && user.id !== profileId && (
+            <ReviewForm 
+              reviewerId={user.id}
+              revieweeId={profileId}
+              onReviewSubmitted={handleReviewSubmitted}
+            />
           )}
         </div>
       )}
